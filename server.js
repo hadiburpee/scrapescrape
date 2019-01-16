@@ -11,7 +11,7 @@ const axios = require("axios");
 //collection name: articles
 
 //requires the models folder for mongoose
-// const db = require("./models");
+var db = require("./models");
 
 //set port to 8080
 var PORT = 8080;

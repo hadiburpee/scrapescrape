@@ -11,7 +11,7 @@ const axios = require("axios");
 //collection name: articles
 
 //requires the models folder for mongoose
-var db = require("./models");
+// var db = require("./models");
 
 //set port to 8080
 var PORT = 8080;
@@ -32,6 +32,26 @@ mongoose.connect("mongodb://localhost/scrape", { useNewUrlParser: true });
 
 //Routes
 
+app.get("/scrape", function(req, res){
+  axios.get("http://www.kotaku.com").then(function(response){
+    var $ = cheerio.load(response.data);
+    $("h1").each(function(i, element){
+      var result = {};
+
+    result.title = $(this)
+      .children("a")
+      .text();
+    result.link = $(this)
+      .children("a")
+      .attr("href");
+
+      console.log(result);
+
+
+    });
+    res.send("Scrape Complete");
+  });
+});
 
 //Starts the server
 app.listen(PORT, function() {

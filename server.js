@@ -36,25 +36,31 @@ mongoose.connect("mongodb://localhost/scrape", { useNewUrlParser: true });
 app.get("/scrape", function(req, res){
   //axios get request to pull body and store in response obj
   axios.get("http://www.kotaku.com").then(function(response){
-    //store response object in $ selector 
+    //store response object in $ selector
+    // console.log(response) 
     var $ = cheerio.load(response.data);
     //grab every h1 from the body
-    $("h1").each(function(i, element){
+    $("article").each(function(i, element){
       var result = {};
 
     result.title = $(this)
-      .children("a")
+      .children("header").children("h1").children("a")
       .text();
-    result.link = $(this)
-      .children("a")
+
+    result.url = $(this)
+      .children("header").children("h1").children("a")
       .attr("href");
 
-      // console.log(result);
+    result.summary = $(this).children("div").children("div")
+    .children("p").text();
+    
 
-      db.Article.create(result).then(function(dbArticle){
-      console.log(dbArticle);
+      console.log(result);
+
+      db.article.create(result).then(function(dbArticle){
+      // console.log(dbArticle);
       }).catch(function(err){
-      console.log(err);
+      // console.log(err);
       });
     });
     res.send("Scrape Complete");
